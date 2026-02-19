@@ -16,8 +16,14 @@ titlebutton=
 icon='-default'
 
 # Destination directory
-if [ "$UID" -eq "$ROOT_UID" ]; then
+if [[ "$UID" -eq "$ROOT_UID" ]]; then
   DEST_DIR="/usr/share/themes"
+elif [[ -n "$XDG_DATA_HOME" ]]; then
+  DEST_DIR="$XDG_DATA_HOME/themes"
+elif [[ -d "$HOME/.themes" ]]; then
+  DEST_DIR="$HOME/.themes"
+elif [[ -d "$HOME/.local/share/themes" ]]; then
+  DEST_DIR="$HOME/.local/share/themes"
 else
   DEST_DIR="$HOME/.themes"
 fi
@@ -32,7 +38,11 @@ SIZE_VARIANTS=('' '-compact')
 if [[ "$(command -v gnome-shell)" ]]; then
   gnome-shell --version
   SHELL_VERSION="$(gnome-shell --version | cut -d ' ' -f 3 | cut -d . -f -1)"
-  if [[ "${SHELL_VERSION:-}" -ge "46" ]]; then
+  if [[ "${SHELL_VERSION:-}" -ge "48" ]]; then
+    GS_VERSION="48-0"
+  elif [[ "${SHELL_VERSION:-}" -ge "47" ]]; then
+    GS_VERSION="47-0"
+  elif [[ "${SHELL_VERSION:-}" -ge "46" ]]; then
     GS_VERSION="46-0"
   elif [[ "${SHELL_VERSION:-}" -ge "44" ]]; then
     GS_VERSION="44-0"
@@ -43,13 +53,9 @@ if [[ "$(command -v gnome-shell)" ]]; then
   else
     GS_VERSION="3-28"
   fi
-
-  if [[ "${SHELL_VERSION:-}" -ge "45" ]]; then
-    activities="default"
-  fi
 else
   echo "'gnome-shell' not found, using styles for last gnome-shell version available."
-  GS_VERSION="44-0"
+  GS_VERSION="48-0"
 fi
 
 usage() {
@@ -241,6 +247,10 @@ install() {
     cp -r "$SRC_DIR/xfwm4/themerc${ELSE_LIGHT:-}"                               "$THEME_DIR/xfwm4/themerc"
   fi
 
+  mkdir -p                                                                      "$THEME_DIR/labwc"
+  cp -r "$SRC_DIR/labwc/assets${ELSE_LIGHT:-}/"*.svg                            "$THEME_DIR/labwc"
+  cp -r "$SRC_DIR/labwc/themerc${ELSE_DARK:-}${ELSE_LIGHT:-}"                   "$THEME_DIR/labwc/themerc"
+
   mkdir -p                                                                      "$THEME_DIR/metacity-1"
   cp -r "$SRC_DIR/metacity-1/metacity-theme-2$color.xml"                        "$THEME_DIR/metacity-1/metacity-theme-2.xml"
 
@@ -385,6 +395,7 @@ while [[ "$#" -gt 0 ]]; do
       done
       ;;
     -i|--icon)
+      activities='icon'
       shift
       for icons in "$@"; do
         case "$icons" in
@@ -608,7 +619,7 @@ install_square() {
 }
 
 activities_style() {
-  sed -i "/\$activities:/s/icon/default/" ${SRC_DIR}/gnome-shell/sass/_tweaks-temp.scss
+  sed -i "/\$activities:/s/default/icon/" ${SRC_DIR}/gnome-shell/sass/_tweaks-temp.scss
 }
 
 install_theme_color() {
@@ -645,7 +656,7 @@ install_theme_color() {
 }
 
 theme_tweaks() {
-  if [[ "$panel" = "float" || "$opacity" == 'solid' || "$window" == 'round' || "$accent" == 'true' || "$blur" == 'true' || "$outline" == 'false' || "$titlebutton" == 'square' ]]; then
+  if [[ "$panel" = "float" || "$opacity" == 'solid' || "$window" == 'round' || "$accent" == 'true' || "$blur" == 'true' || "$outline" == 'false' || "$titlebutton" == 'square' || "$activities" = "icon" ]]; then
     tweaks='true'
     install_package; tweaks_temp
   fi
@@ -674,7 +685,7 @@ theme_tweaks() {
     install_square
   fi
 
-  if [[ "$activities" = "default" ]] ; then
+  if [[ "$activities" = "icon" ]] ; then
     activities_style
   fi
 }
@@ -749,8 +760,20 @@ clean_theme() {
     for theme in "${THEME_VARIANTS[@]}"; do
       for color in '-light' '-dark'; do
         for size in "${SIZE_VARIANTS[@]}"; do
-          clean "${dest:-$DEST_DIR}" "${_name:-$THEME_NAME}" "$round" "$theme" "$color" "$size"
+          clean "${dest:-$DEST_DIR}" "${name:-$THEME_NAME}" "$round" "$theme" "$color" "$size"
         done
+      done
+    done
+  done
+
+  if [[ "$DEST_DIR" == "$HOME/.themes" ]]; then
+    local dest="$HOME/.local/share/themes"
+  fi
+
+  for theme in "${THEME_VARIANTS[@]}"; do
+    for color in "${COLOR_VARIANTS[@]}"; do
+      for size in "${SIZE_VARIANTS[@]}"; do
+        uninstall "${dest}" "${name:-$THEME_NAME}" "$theme" "$color" "$size"
       done
     done
   done
@@ -760,7 +783,7 @@ uninstall_theme() {
   for theme in "${themes[@]}"; do
     for color in "${colors[@]}"; do
       for size in "${sizes[@]}"; do
-        uninstall "${dest:-$DEST_DIR}" "${_name:-$THEME_NAME}" "$theme" "$color" "$size"
+        uninstall "${dest:-$DEST_DIR}" "${name:-$THEME_NAME}" "$theme" "$color" "$size"
       done
     done
   done
@@ -770,7 +793,7 @@ install_theme() {
   for theme in "${themes[@]}"; do
     for color in "${colors[@]}"; do
       for size in "${sizes[@]}"; do
-        install "${dest:-$DEST_DIR}" "${_name:-$THEME_NAME}" "$theme" "$color" "$size" "$icon"
+        install "${dest:-$DEST_DIR}" "${name:-$THEME_NAME}" "$theme" "$color" "$size" "$icon"
       done
     done
   done
@@ -780,7 +803,7 @@ link_theme() {
   for theme in "${themes[@]}"; do
     for color in "${lcolors[@]}"; do
       for size in "${sizes[0]}"; do
-        link_libadwaita "${dest:-$DEST_DIR}" "${_name:-$THEME_NAME}" "$theme" "$color" "$size"
+        link_libadwaita "${dest:-$DEST_DIR}" "${name:-$THEME_NAME}" "$theme" "$color" "$size"
       done
     done
   done

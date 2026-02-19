@@ -197,11 +197,12 @@ StEntry StLabel.hint-text {
 
 .icon-button.default:focus, .button.default:focus {
   color: #1A73E8;
-  box-shadow: none;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
-.icon-button.default:focus:active, .button.default:focus:active {
-  color: white;
+.icon-button.default:focus:hover, .button.default:focus:hover, .icon-button.default:focus:active, .button.default:focus:active {
+  color: #1A73E8;
 }
 
 .icon-button.default:hover, .button.default:hover {
@@ -223,6 +224,10 @@ StEntry StLabel.hint-text {
   background-color: #1567d3;
   border-color: #0e458e;
   box-shadow: none;
+}
+
+.icon-button.default:active:hover, .button.default:active:hover, .icon-button.default:active:focus, .button.default:active:focus {
+  background-color: #1567d3;
 }
 
 .icon-button, .button {
@@ -258,6 +263,10 @@ StEntry StLabel.hint-text {
   background-color: #1A73E8;
   border-color: #1A73E8;
   box-shadow: none;
+}
+
+.icon-button:checked:hover, .button:checked:hover, .icon-button:checked:focus, .button:checked:focus {
+  background-color: #1A73E8;
 }
 
 .icon-button:insensitive, .button:insensitive {
@@ -1487,13 +1496,14 @@ StScrollBar StButton#vhandle:active, StScrollBar StButton#hhandle:active {
 }
 
 .modal-dialog .modal-dialog-content-box {
-  margin: 32px 40px;
-  spacing: 32px;
+  margin: 16px 20px 24px;
+  spacing: 16px;
   max-width: 28em;
 }
 
 .modal-dialog .modal-dialog-linked-button {
-  min-height: 32px;
+  min-height: 20px;
+  padding: 4px 8px;
   background-gradient-direction: none !important;
 }
 
@@ -1582,7 +1592,7 @@ StScrollBar StButton#vhandle:active, StScrollBar StButton#hhandle:active {
 }
 
 .prompt-dialog .modal-dialog-content-box {
-  margin-bottom: 24px;
+  margin-bottom: 4px;
 }
 
 .prompt-dialog .modal-dialog-linked-button:last-child {
@@ -1932,7 +1942,7 @@ StScrollBar StButton#vhandle:active, StScrollBar StButton#hhandle:active {
   transition-duration: 250ms;
   border: none;
   box-shadow: none;
-  background-color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(255, 255, 255, 0.5);
   margin: 0;
   border-radius: 0;
   height: 30px;
@@ -1944,7 +1954,7 @@ StScrollBar StButton#vhandle:active, StScrollBar StButton#hhandle:active {
 
 #panel .panel-corner {
   -panel-corner-radius: 0;
-  -panel-corner-background-color: rgba(255, 255, 255, 0.75);
+  -panel-corner-background-color: rgba(255, 255, 255, 0.5);
   -panel-corner-border-width: 0;
   -panel-corner-border-color: transparent;
   -panel-corner-opacity: 0;
@@ -2027,21 +2037,25 @@ StScrollBar StButton#vhandle:active, StScrollBar StButton#hhandle:active {
 }
 
 #panel .panel-button .panel-status-menu-box .system-status-icon {
-  margin: 0 0;
+  margin: 0;
 }
 
 #panel .panel-button .panel-status-menu-box StLabel {
   padding: 0 0 0 2px;
 }
 
-#panel .panel-button .appindicator-trayicons-box {
+#panel .panel-button .panel-status-menu-box,
+#panel .panel-button .panel-status-indicators-box {
+  spacing: 2px;
+}
+
+#panel .panel-button .appindicator-trayicons-box,
+#panel .panel-button .panel-status-indicators-box.appindicator-box {
   margin: 0 4px;
 }
 
-#panel .panel-button .panel-status-indicators-box,
-#panel .panel-button .panel-status-menu-box,
-#panel .panel-button .power-status.panel-status-indicators-box {
-  spacing: 2px;
+#panel .panel-button .clipboard-indicator-icon {
+  margin: 0 4px;
 }
 
 #panel .panel-button .app-menu-icon {
@@ -2100,8 +2114,12 @@ StScrollBar StButton#vhandle:active, StScrollBar StButton#hhandle:active {
 }
 
 #panel Gjs_ui_panel_AggregateMenu.panel-button .system-status-icon {
-  margin: 0 0 !important;
+  margin: 0 !important;
   padding: 4px !important;
+}
+
+#panel Gjs_kimpanel_kde_org_indicator_KimIndicator.panel-button .panel-status-menu-box {
+  margin: 0 4px;
 }
 
 #panel .screencast-indicator,
@@ -2162,7 +2180,7 @@ StScrollBar StButton#vhandle:active, StScrollBar StButton#hhandle:active {
 .window-close {
   background-color: #1A73E8;
   color: white;
-  border-radius: 21px;
+  border-radius: 9999px;
   padding: 3px;
   height: 30px;
   width: 30px;
@@ -3192,6 +3210,12 @@ StWidget.focused .app-well-app-running-dot {
   box-shadow: none;
 }
 
+.login-dialog .modal-dialog-button:default:active:hover, .login-dialog .modal-dialog-button:default:active:focus,
+.unlock-dialog .modal-dialog-button:default:active:hover,
+.unlock-dialog .modal-dialog-button:default:active:focus {
+  background-color: #176ee1;
+}
+
 .login-dialog .modal-dialog-button:default:insensitive,
 .unlock-dialog .modal-dialog-button:default:insensitive {
   color: rgba(255, 255, 255, 0.5);
@@ -3635,7 +3659,7 @@ StWidget.focused .app-well-app-running-dot {
 }
 
 #dashtodockContainer #dash .dash-background {
-  background-color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(255, 255, 255, 0.5);
   background-clip: padding-box;
 }
 
@@ -3684,7 +3708,7 @@ StWidget.focused .app-well-app-running-dot {
 }
 
 #dashtodockContainer.transparent #dash .dash-background {
-  background-color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
 #dashtodockContainer:overview #dash .dash-background {

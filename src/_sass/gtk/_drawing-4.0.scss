@@ -103,7 +103,7 @@
 
   @if $t == hover {
     box-shadow: inset 0 0 0 1px transparent, 0 0 0 2px transparent;
-    // background-color: $base;
+    background-color: $base;
     border-color: $track;
     outline: none;
   }
@@ -121,6 +121,8 @@
                 border $ripple-fade-out-duration $ease-out,
                 box-shadow $ripple-fade-out-duration $ease-out;
     box-shadow: inset 0 0 0 1px $track, 0 0 0 2px transparent;
+    background-color: $base;
+    border-color: $track;
   }
 
   @if $t == disabled {
@@ -286,7 +288,7 @@
 }
 
 
-@mixin undershoot($p, $c: $frame, $neighbor: false) {
+@mixin undershoot($p, $c: $frame, $neighbor: false, $style: compact) {
 //
 // undershoot
 //
@@ -317,9 +319,14 @@
   } @else {
     @error "Unknown position #{$p}"
   }
-  
+
   #{$_selector} undershoot.#{$p} {
-    box-shadow: inset $_border_pos $border;
+    @if $style == 'compact' {
+      box-shadow: none;
+    } @else {
+      box-shadow: inset $_border_pos $border;
+    }
+
     background: linear-gradient(to $_direction, gtkalpha($c, .75), transparent 6px);
   }
 }
